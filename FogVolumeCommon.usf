@@ -1,0 +1,98 @@
+/*=============================================================================
+	FogVolumeCommon.usf: 
+	Copyright 1998-2008 Epic Games, Inc. All Rights Reserved.
+=============================================================================*/
+
+/* parameters specific to the density function */
+const float4	FirstDensityFunctionParameters;
+const float4	SecondDensityFunctionParameters;
+
+/* Distance from the camera that fog should start, in world units. */
+float StartDistance;
+
+/* Used to avoid divide by zero */
+const static float Epsilon = .0001;
+
+/*
+* Clips a ray to an AABB.  Does not handle rays parallel to any of the planes.
+*
+* @param RayOrigin - The origin of the ray in world space.
+* @param RayEnd - The end of the ray in world space.  
+* @param BoxMin - The minimum extrema of the box.
+* @param BoxMax - The maximum extrema of the box.
+* @return - Returns the closest intersection along the ray in x, and furthest in y.  
+*			If the ray did not intersect the box, then the furthest intersection <= the closest intersection.
+*			The intersections will always be in the range [0,1], which corresponds to [RayOrigin, RayEnd] in worldspace.
+*			To find the world space position of either intersection, simply plug it back into the ray equation:
+*			WorldPos = RayOrigin + (RayEnd - RayOrigin) * Intersection;
+*/
+float2 RayBoxIntersect(float3 RayOrigin, float3 RayEnd, float3 BoxMin, float3 BoxMax)
+{
+	return float2(0.0f, 0.0f);
+}
+
+/*
+* Constant density - constant density factor stored in FirstDensityFunctionParameters.x
+*
+* Computes the line integral from the camera to the current face of the fog volume being rendered
+* or an intersecting opaque object.
+*/
+float ConstantDensityLineIntegral(float3 WorldReceiverPos, float3 InCameraPosition, float2 IntersectionRange)
+{
+	return 0.0f;
+}
+
+/*
+* A halfspace of fog with density increasing linearly away from the plane, 
+* linear density factor stored in FirstDensityFunctionParameters.x, plane stored in SecondDensityFunctionParameters
+*
+* Computes the line integral from the camera to the current face of the fog volume being rendered
+* or an intersecting opaque object.
+*/
+float LinearHalfspaceLineIntegral(float3 WorldReceiverPos, float3 InCameraPosition)
+{
+	return 0.0f;
+}
+
+/*
+* A halfspace of fog with density increasing linearly away from the plane, 
+* Density function = -FirstDensityFunctionParameters.x * DistanceToPlane
+* linear density factor stored in FirstDensityFunctionParameters.x, plane stored in SecondDensityFunctionParameters
+* Clamps the ray to the range [IntersectionRange.x, IntersectionRange.y]
+*
+* Computes the line integral from the camera to the current face of the fog volume being rendered
+* or an intersecting opaque object.
+*/
+float LinearHalfspaceLineIntegral(float3 WorldReceiverPos, float3 InCameraPosition, float2 IntersectionRange)
+{
+	return 0.0f;
+}
+
+const static float PI_2 = 1.57079632f;
+
+float ArcTan(float value)
+{
+	//close enough
+	float ValueSign = sign(value);
+	return ValueSign * (-PI_2 * exp2(-ValueSign * value) + PI_2);
+
+	//funky
+	//return sin(value * 5.0f);
+
+	//slow
+	//return atan2(value, 1.0f);
+}
+
+/*
+* A sphere shaped density function with G1 continuity at the center and smooth quadratic falloff at the edges.
+* Spherical Density = MaximumDensity * (1 - distanceToCenter^2 / SphereRadius^2), where MaximumDensity is the maximum density at the center of the sphere.
+* This density function has its zeroes at SphereRadius and -SphereRadius, so the edges of the sphere fade out smoothly.
+* MaxDensity stored in FirstDensityFunctionParameters.x, sphere center in SecondDensityFunctionParameters.xyz, sphere radius in SecondDensityFunctionParameters.w
+*
+* Computes the line integral from the camera to the current face of the fog volume being rendered
+* or an intersecting opaque object.
+*/
+float SphericalLineIntegral(float3 WorldReceiverPos, float3 InCameraPosition)
+{
+	return 0.0f;
+}

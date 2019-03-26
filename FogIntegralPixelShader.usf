@@ -1,0 +1,113 @@
+/*=============================================================================
+	FogIntegralPixelShader.usf: Computes the line integral for fog volumes
+	Copyright 1998-2008 Epic Games, Inc. All Rights Reserved.
+=============================================================================*/
+
+#include "Common.usf"
+#include "FogVolumeCommon.usf"
+#include "Material.usf"
+#include "VertexFactory.usf"
+
+/* transform from post projective space to world space */
+float4x4 ScreenToWorld;
+
+/* world space camera position */
+float4	FogCameraPosition;
+
+/* set to 1.0f for backfaces, and -1.0f for frontfaces */
+float	FaceScale;
+
+/* offsets for filtering scene depth */
+float4  DepthFilterSampleOffsets[2];
+
+/* 1 / MaxIntegral estimate for the density function */
+float	InvMaxIntegral;
+
+/*
+* Filters scene depth by taking 4 samples and averaging the results
+* which helps to antialias it when rendering to a downsampled integral buffer.
+*/
+half PreviousFilteredDepth(float4 ScreenPosition)
+{
+	return 0;
+}
+
+/*
+* Returns the filtered world space position of ScreenPosition or the closest opaque object.
+*/
+float3 GetClosestFilteredWorldPos(float4 ScreenPosition)
+{
+	return float3(0.0f, 0.0f, 0.0f);
+}
+
+/*
+* Returns the world space position of ScreenPosition or the closest opaque object.
+*/
+float3 GetClosestWorldPos(float4 ScreenPosition)
+{
+	return float3(0.0f, 0.0f, 0.0f);
+}
+
+/*
+* Encodes the floating point integral based on what the current platform needs.  
+* Platforms that can do high precision fp blending negate the integral for frontfaces,
+* Platforms without fp blending pack the integral into a fixed point buffer.
+*/
+float4 EncodeIntegral(float Integral)
+{
+	return float4(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+/*
+* Constant density - constant density factor stored in FirstDensityFunctionParameters.x
+*
+* Computes the line integral from the camera to the current face of the fog volume being rendered
+* or an intersecting opaque object.
+*/
+void ConstantDensityMain(
+	FVertexFactoryInterpolants Interpolants,
+	float4	ScreenPosition	: TEXCOORD5,
+	out float4 OutColor		: COLOR0
+	)
+{
+	OutColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+/*
+* Entry point for LinearHalfspace Density
+*/
+void LinearHalfspaceDensityMain(
+	FVertexFactoryInterpolants Interpolants,
+	float4	ScreenPosition	: TEXCOORD5,
+	out float4 OutColor		: COLOR0
+	)
+{
+	OutColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+/*
+* Entry point for Spherical Density
+*/
+void SphericalDensityMain(
+	FVertexFactoryInterpolants Interpolants,
+	float4	ScreenPosition	: TEXCOORD5,
+	out float4 OutColor		: COLOR0
+	)
+{
+	OutColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+}
+
+/*
+* Not fully implemented
+*
+* Computes the line integral from the camera to the current face of the fog volume being rendered
+* or an intersecting opaque object.
+*/
+void ConeDensityMain(
+	FVertexFactoryInterpolants Interpolants,
+	float4	ScreenPosition	: TEXCOORD5,
+	out float4 OutColor		: COLOR0
+	)
+{
+	OutColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+}
